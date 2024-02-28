@@ -46,6 +46,33 @@ def unauthorized(error) -> str:
 
 @app.before_request
 def before_request_handler():
+    """ Perform authenticaton and authorization
+    checks before each request.
+
+    Authentication and Authorization Workflow:
+    1. If the 'auth' object is None, no authentication
+       mechanism is configured, and the function
+       returns without performing any checks.
+    2. If the requested path is not in the list of paths
+       that do not require authentication, the function
+       proceeds with authentication checks.
+    3. The 'require_auth' method of the 'auth' object
+       is used to check if authentication is required
+       for the request. If it returns False, indicating
+       that authentication is not required, the function
+       skips authentication checks for this request.
+    4. The 'authorization_header' method of the 'auth'
+       object is used to check if the authorization header
+       is present in the request. If it returns None,
+       indicating that the authorization header is missing,
+       the function aborts the request with a 401
+       Unauthorized status code.
+    5. The 'current_user' method of the 'auth' object
+       is used to check if the current user is authenticated.
+       If it returns None, indicating that no user
+       is authenticated, the function aborts the request
+       with a 403 Forbidden status code.
+    """
     exclude_paths = [
                         '/api/v1/status/',
                         '/api/v1/unauthorized/',
